@@ -1,0 +1,22 @@
+﻿IF EXISTS (SELECT * FROM sys.objects WHERE OBJECT_ID = OBJECT_ID(N'[dbo].[Event_Sel]') AND type IN (N'P', N'PC'))
+	DROP PROCEDURE [dbo].[Event_Sel]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[Event_Sel]
+(
+	@Name NVARCHAR(300)
+)
+AS
+BEGIN
+	SELECT
+		[Data]
+	FROM [Event] WITH (NOLOCK)
+	WHERE [Name] = @Name
+	ORDER BY [SequenceID]
+END
+GO
