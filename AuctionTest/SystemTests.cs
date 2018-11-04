@@ -22,7 +22,7 @@ namespace AuctionTest
         public void System_Publish_UserCreated_Test()
         {
             var eventName = "AuctionDomainUser.Events.UserCreated";
-            var data = "{\"$type\":\"AuctionDomainUser.Events.UserCreated, AuctionDomainUser\"}";
+            var data = "{\"$type\":\"AuctionDomainUser.Events.UserCreated, AuctionDomainUser\",\"UserID\":\"0fe6807e-c045-4dd7-a16d-d0b772ac3db0\",\"FirstName\":\"Phillip\",\"LastName\":\"Do\",\"PhoneNumber\":\"714-235-5554\",\"EmailAddress\":\"pdo9141@gmail.com\",\"Password\":\"Password@1\",\"Attributes\":{\"$type\":\"System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[System.String, mscorlib]], mscorlib\"}}";
 
             var redis = RedisStore.RedisCache;
             var publisher = redis.Multiplexer.GetSubscriber();
@@ -34,7 +34,7 @@ namespace AuctionTest
         public void System_Publish_UserPasswordChanged_Test()
         {
             var eventName = "AuctionDomainUser.Events.UserPasswordChanged";
-            var data = "{\"$type\":\"AuctionDomainUser.Events.UserPasswordChanged, AuctionDomainUser\"}";
+            var data = "{\"$type\":\"AuctionDomainUser.Events.UserPasswordChanged, AuctionDomainUser\",\"UserID\":\"0fe6807e-c045-4dd7-a16d-d0b772ac3db0\",\"Password\":\"Password@2\",\"Attributes\":{\"$type\":\"System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[System.String, mscorlib]], mscorlib\"}}";
 
             var redis = RedisStore.RedisCache;
             var publisher = redis.Multiplexer.GetSubscriber();
@@ -50,6 +50,7 @@ namespace AuctionTest
             await dispatcher.Dispatch(registerUserCommand);
 
             var changePasswordCommand = new ChangePasswordCommand(userID, "Password@2");
+            await dispatcher.Dispatch(changePasswordCommand);
         }
 
         static CommandDispatcher SetupDispatcher()
