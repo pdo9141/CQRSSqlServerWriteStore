@@ -42,7 +42,7 @@ BEGIN
 		SET @Version = @Version + 1;
 
 		INSERT INTO [Event] ([AggregateID], [Name], [Data], [Version], [Timestamp])
-		SELECT @AggregateID, @Name, [Data], @Version], @Now
+		SELECT @AggregateID, @Name, [Data], @Version, @Now
 		FROM @Batch;
 
 		UPDATE [EventSource]
