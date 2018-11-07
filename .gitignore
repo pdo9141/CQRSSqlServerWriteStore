@@ -14,3 +14,5 @@
 /AuctionAPI/bin
 /AuctionAPI/obj/Debug
 /.vs
+/AuctionEventPublisher/obj/Debug
+/AuctionEventPublisher/bin/Debug

@@ -1,18 +1,19 @@
-﻿using AuctionDomainUser.Events;
-using AuctionDomainUser.Queries;
-using AuctionFramework.Helpers;
+﻿using System;
+using System.Configuration;
 using Raven.Client;
 using Raven.Client.Document;
 using StackExchange.Redis;
-using System;
-using System.Configuration;
+using AuctionDomainUser.Events;
+using AuctionDomainUser.Queries;
+using AuctionFramework.Helpers;
 
-namespace AuctionPubSub
-{
+namespace AuctionEventSubscriber {
     class Program
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("######### AuctionEventSubscriber Started #########");
+
             var redis = RedisStore.RedisCache;
 
             var sub = redis.Multiplexer.GetSubscriber();
@@ -33,6 +34,7 @@ namespace AuctionPubSub
 
                     session.SaveChanges();
                 }
+                Console.WriteLine($"Synced UserCreated event for {publishedEvent.FirstName} {publishedEvent.LastName}");
             });
 
             sub.Subscribe("AuctionDomainUser.Events.UserPasswordChanged", (channel, message) => {
@@ -45,7 +47,11 @@ namespace AuctionPubSub
                     user.Password = publishedEvent.Password;
                     session.SaveChanges();
                 }
+
+                Console.WriteLine($"Synced UserPasswordChanged event for UserID: {publishedEvent.UserID}");
             });
+
+            Console.ReadLine();
         }
     }
 

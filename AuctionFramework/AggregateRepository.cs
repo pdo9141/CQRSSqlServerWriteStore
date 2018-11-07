@@ -69,6 +69,40 @@ namespace AuctionFramework
             }
         }
 
+        public async Task<Tuple<long, string>> GetEventDataForPublishing() {
+            var sequenceID = default(long);
+            var data = String.Empty;
+
+            using (var connection = new SqlConnection(_connectionString)) {
+                var sequenceIDs = await connection.QueryAsync<Event>("EventPublisher_Sel", commandType: CommandType.StoredProcedure).ConfigureAwait(false);
+                if (sequenceIDs != null && sequenceIDs.Count() > 0)
+                    sequenceID = ++sequenceIDs.First().SequenceID;
+                else
+                    sequenceID = 1;
+
+                var argumentObject = new { ID = sequenceID };
+                var events = await connection.QueryAsync<Event>("Event_SelByID", argumentObject, commandType: CommandType.StoredProcedure).ConfigureAwait(false);
+                if (events != null && events.Count() > 0) {
+                    foreach (var e in events) {
+                        data = e.Data;
+                        break;
+                    }
+                }
+            }
+
+            return new Tuple<long, string>(sequenceID, data);
+        }
+
+        public async Task<int> CreatePublishingRecord(long sequenceID) {
+            using (var connection = new SqlConnection(_connectionString)) {
+                var argumentObject = new {
+                    SequenceID = sequenceID
+                };
+
+                return await connection.ExecuteAsync("EventPublisher_Ins", argumentObject, commandType: CommandType.StoredProcedure);
+            }
+        }
+
         private string StreamName(Type aggregate, Guid id)
         {
             return $"{aggregate.Name}+{id}";
