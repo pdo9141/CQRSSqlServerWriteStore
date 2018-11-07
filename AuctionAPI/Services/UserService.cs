@@ -1,11 +1,10 @@
-﻿using AuctionAPI.Application;
+﻿using System;
+using AuctionAPI.Application;
 using AuctionAPI.Dtos.User;
 using AuctionDomainUser.Commands;
 using AuctionDomainUser.Queries;
-using System;
 
-namespace AuctionAPI.Services
-{
+namespace AuctionAPI.Services {
     public class UserService
     {
         private readonly IUserRepository _userRepository;
@@ -28,6 +27,11 @@ namespace AuctionAPI.Services
             Dispatcher.Instance.Dispatch(registerUser);
         }
 
+        internal void ChangePassword(ChangePasswordDto dto) {
+            var changePasswordCommand = new ChangePasswordCommand(dto.UserID, dto.NewPassword);
+            Dispatcher.Instance.Dispatch(changePasswordCommand);
+        }
+
         #endregion
 
         #region Query Stack
@@ -36,7 +40,7 @@ namespace AuctionAPI.Services
         {
             return _userRepository.GetUser(id);
         }
-
+        
         #endregion
     }
 }

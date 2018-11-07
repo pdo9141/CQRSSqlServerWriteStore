@@ -1,11 +1,10 @@
-﻿using AuctionAPI.Dtos;
+﻿using System;
+using System.Web.Http;
+using AuctionAPI.Dtos;
 using AuctionAPI.Dtos.User;
 using AuctionAPI.Services;
-using System;
-using System.Web.Http;
 
-namespace AuctionAPI.Controllers.v1
-{
+namespace AuctionAPI.Controllers.v1 {
     [RoutePrefix("api/v1/user")]
     public class UserController : ApiController
     {
@@ -23,6 +22,13 @@ namespace AuctionAPI.Controllers.v1
         public IHttpActionResult RegisterUser(RegisterUserDto dto)
         {
             _userService.RegisterUser(dto);
+            return Created(String.Empty, new ApiResponse());
+        }
+
+        [HttpPost]
+        [Route("changepassword")]
+        public IHttpActionResult ChangePassword(ChangePasswordDto dto) {
+            _userService.ChangePassword(dto);
             return Created(String.Empty, new ApiResponse());
         }
     }
